@@ -105,7 +105,11 @@ if (ExecutionEnvironment.canUseDOM) {
     .match(/-(moz|webkit|ms|o)-/);
   var cssVendorPrefix = prefixMatch && prefixMatch[0];
 
-  prefixInfo = infoByCssPrefix[cssVendorPrefix] || prefixInfo;
+  // prefixer is available only when DOM can be available.
+  // this means that generated markup in server-side is not what client was expected.
+  // prefixer will be obstacle for server-side rendering, so make it always disabled.
+  //
+  // prefixInfo = infoByCssPrefix[cssVendorPrefix] || prefixInfo;
 }
 
 var _camelCaseRegex = /([a-z])?([A-Z])/g;
