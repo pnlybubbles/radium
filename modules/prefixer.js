@@ -176,7 +176,20 @@ var _addPixelSuffixToValueIfNeeded = function (originalProperty, value) {
   return value;
 };
 
+// return property which is before prefixed
+var _getBeforePrefixedProperty = function (property) {
+  if (property.slice(0, prefixInfo.jsPrefix.length) === prefixInfo.jsPrefix) {
+    var beforePrefixedProperty = property.slice(prefixInfo.jsPrefix.length);
+    return beforePrefixedProperty[0].toLowerCase() + beforePrefixedProperty.slice(1);
+  }
+  return property;
+};
+
 var _getPrefixedValue = function (property, value, originalProperty) {
+  // if property has already been prefixed, replace originalProperty to not prefixed
+  // to avoid wrong recognition of property which requires unit-less number
+  originalProperty = _getBeforePrefixedProperty(originalProperty);
+
   if (!Array.isArray(value)) {
     // don't test numbers (pure or stringy), but do add 'px' prefix if needed
     if (!isNaN(value)) {
