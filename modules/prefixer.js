@@ -134,35 +134,35 @@ var getPrefixedPropertyName = function (property) {
   // Try the prefixed version first. Chrome in particular has the `filter` and
   // `webkitFilter` properties availalbe on the style object, but only the
   // prefixed version actually works.
-  var possiblePropertyNames = [
-    // Prefixed
-    {
-      css: prefixInfo.cssPrefix + _camelCaseToDashCase(property),
-      js: prefixInfo.jsPrefix + property[0].toUpperCase() + property.slice(1)
-    },
-    unprefixed
-  ];
+  // var possiblePropertyNames = [
+  //   // Prefixed
+  //   {
+  //     css: prefixInfo.cssPrefix + _camelCaseToDashCase(property),
+  //     js: prefixInfo.jsPrefix + property[0].toUpperCase() + property.slice(1)
+  //   },
+  //   unprefixed
+  // ];
 
   // Alternative property names
-  if (
-    prefixInfo.alternativeProperties &&
-    prefixInfo.alternativeProperties[property]
-  ) {
-    possiblePropertyNames = possiblePropertyNames.concat(
-      prefixInfo.alternativeProperties[property]
-    );
-  }
+  // if (
+  //   prefixInfo.alternativeProperties &&
+  //   prefixInfo.alternativeProperties[property]
+  // ) {
+  //   possiblePropertyNames = possiblePropertyNames.concat(
+  //     prefixInfo.alternativeProperties[property]
+  //   );
+  // }
 
-  var workingProperty = arrayFind(
-    possiblePropertyNames,
-    function (possiblePropertyName) {
-      if (possiblePropertyName.js in domStyle) {
-        return possiblePropertyName;
-      }
-    }
-  ) || false;
+  // var workingProperty = arrayFind(
+  //   possiblePropertyNames,
+  //   function (possiblePropertyName) {
+  //     if (possiblePropertyName.js in domStyle) {
+  //       return possiblePropertyName;
+  //     }
+  //   }
+  // ) || false;
 
-  return prefixedPropertyCache[property] = workingProperty;
+  return prefixedPropertyCache[property] = unprefixed;
 };
 
 // React is planning to deprecate adding px automatically
@@ -182,9 +182,11 @@ var _addPixelSuffixToValueIfNeeded = function (originalProperty, value) {
 
 // return property which is before prefixed
 var _getBeforePrefixedProperty = function (property) {
-  if (property.slice(0, prefixInfo.jsPrefix.length) === prefixInfo.jsPrefix) {
-    var beforePrefixedProperty = property.slice(prefixInfo.jsPrefix.length);
-    return beforePrefixedProperty[0].toLowerCase() + beforePrefixedProperty.slice(1);
+  for(var k in infoByCssPrefix) {
+    if (property.slice(0, infoByCssPrefix[k].jsPrefix.length) === infoByCssPrefix[k].jsPrefix) {
+      var beforePrefixedProperty = property.slice(infoByCssPrefix[k].jsPrefix.length);
+      return beforePrefixedProperty[0].toLowerCase() + beforePrefixedProperty.slice(1);
+    }
   }
   return property;
 };
